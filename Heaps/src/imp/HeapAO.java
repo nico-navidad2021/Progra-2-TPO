@@ -4,13 +4,9 @@ import api.HeapTDA;
 
 public class HeapAO implements HeapTDA {
 
-    class Heap{
-        String tipo_heap;
-        int[] Heap;
-        int tamano;
-    }
-
-    Heap heap;
+    String tipo_heap;
+    int[] Heap;
+    int indice;
 
     private int padre(int pos){
         return pos/2;
@@ -25,76 +21,75 @@ public class HeapAO implements HeapTDA {
     }
 
     private boolean esHoja(int pos){
-        if(pos > (heap.tamano/2) && pos <= heap.tamano){
+        if(pos > (indice/2) && pos <= indice){
             return true;    
         }
         return false;
     }
 
     private void intercambiar(int pos1, int pos2){
-        int aux = heap.Heap[pos1];
-        heap.Heap[pos1] = heap.Heap[pos2];
-        heap.Heap[pos2] = aux;
+        int aux = Heap[pos1];
+        Heap[pos1] = Heap[pos2];
+        Heap[pos2] = aux;
     }
 
     @Override
     public void InicializarHeap(String tipo) {
-        heap.tamano = 0;
-        heap.tipo_heap = tipo;
-        heap.Heap = new int[14];
-        
+        tipo_heap = tipo;
+        indice = 0;
+        Heap = new int[14];
+
     }
 
     @Override
     public int Primero() {
-        return heap.Heap[0];
+        return Heap[0];
     }
 
-    @Override
-    public void Insertar(int x) {
-        if(heap.tamano == 0) heap.tamano = 1;
-        heap.Heap[heap.tamano] = x;
-        if(heap.tipo_heap == "max"){
-            int pos_actual = heap.tamano;
-            while(heap.Heap[pos_actual] >= heap.Heap[padre(pos_actual)]){
+    @Override //Funca barbaro
+    public void Insertar(int elemento) {
+        Heap[indice] = elemento;
+        if(tipo_heap == "max"){
+            int pos_actual = indice;
+            while(Heap[pos_actual] > Heap[padre(pos_actual)]){
                 intercambiar(pos_actual, padre(pos_actual));
                 pos_actual = padre(pos_actual);
             }
-            heap.tamano++;
+            indice++;
         }else{
-            int pos_actual = heap.tamano;
-            while(heap.Heap[pos_actual] <= heap.Heap[padre(pos_actual)]){
+            int pos_actual = indice;
+            while(Heap[pos_actual] < Heap[padre(pos_actual)]){
                 intercambiar(pos_actual, padre(pos_actual));
                 pos_actual = padre(pos_actual);
             }
-            heap.tamano++;
+            indice++;
         }     
     }
 
-    private void maxHeapify(int pos){
-        if(esHoja(pos)){
-            return;
-        }else{
-            //Si la posicion en la que me encuentro es mayor a ambos hijos
-            if(heap.Heap[pos] < heap.Heap[hijoIzq(pos)] || heap.Heap[pos] < heap.Heap[hijoDer(pos)]){
-                if(heap.Heap[hijoIzq(pos)] > heap.Heap[hijoDer(pos)]){
-                    intercambiar(pos, hijoIzq(pos));
-                    maxHeapify(hijoIzq(pos));
-                }else{
-                    intercambiar(pos, hijoIzq(pos));
-                    maxHeapify(hijoIzq(pos));
-                }
-            }
-        }
-    }
+    // private void maxHeapify(int pos){
+    //     if(esHoja(pos)){
+    //         return;
+    //     }else{
+    //         //Si la posicion en la que me encuentro es mayor a ambos hijos
+    //         if(Heap[pos] < Heap[hijoIzq(pos)] || Heap[pos] < Heap[hijoDer(pos)]){
+    //             if(Heap[hijoIzq(pos)] > Heap[hijoDer(pos)]){
+    //                 intercambiar(pos, hijoIzq(pos));
+    //                 maxHeapify(hijoIzq(pos));
+    //             }else{
+    //                 intercambiar(pos, hijoIzq(pos));
+    //                 maxHeapify(hijoIzq(pos));
+    //             }
+    //         }
+    //     }
+    // }
 
 
     @Override
     public void Eliminar() {
-        if(heap.tipo_heap == "max"){
-            heap.Heap[0] = heap.Heap[heap.tamano];
-            heap.tamano--;
-            maxHeapify(0);
+        if(tipo_heap == "max"){
+            Heap[0] = Heap[indice];
+            indice--;
+            // maxHeapify(0);
         }else{
 
         }
@@ -103,7 +98,7 @@ public class HeapAO implements HeapTDA {
 
     @Override
     public boolean HeapVacio() {
-        return heap.tamano == 0;
+        return indice == 0;
     }
     
 }
