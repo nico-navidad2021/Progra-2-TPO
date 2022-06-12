@@ -2,12 +2,6 @@ package imp;
 
 import api.HeapTDA;
 
-//TO-DO
-// minHeapify()
-// Eliminar para minHeap
-
-
-
 public class HeapAO implements HeapTDA {
 
     String tipo_heap;
@@ -27,7 +21,9 @@ public class HeapAO implements HeapTDA {
     }
 
     private boolean esHoja(int pos){
-        if(pos > (indice/2) && pos <= indice){
+        // System.out.println("pos "+pos);
+        // System.out.println("indice "+indice);
+        if((pos > (int)((indice-1)/2) && pos <= (indice-1))  || (indice == 1)){
             return true;    
         }
         return false;
@@ -44,7 +40,6 @@ public class HeapAO implements HeapTDA {
         tipo_heap = tipo;
         indice = 0;
         Heap = new int[14];
-
     }
 
     @Override
@@ -77,9 +72,6 @@ public class HeapAO implements HeapTDA {
             return;
         }else{
             //Si la posicion en la que me encuentro es mayor a ambos hijos
-            // System.out.println("Hijo izquierdo de "+Heap[pos]+": "+Heap[hijoIzq(pos)]);
-            // System.out.println("Hijo derecho de "+Heap[pos]+": "+Heap[hijoDer(pos)]);
-
             if(Heap[pos] < Heap[hijoIzq(pos)] || Heap[pos] < Heap[hijoDer(pos)]){
                 if(Heap[hijoIzq(pos)] > Heap[hijoDer(pos)]){
                     intercambiar(pos, hijoIzq(pos));
@@ -89,6 +81,92 @@ public class HeapAO implements HeapTDA {
                     maxHeapify(hijoDer(pos));
                 }
             }
+        }
+    }
+
+    private boolean tieneHijoDer(int pos){
+        if( (2*pos)+2 > indice-1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    private boolean tieneHijoIzq(int pos){
+        if( (2*pos)+1 > indice-1){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
+
+
+    private void minHeapify(int pos){
+        // System.out.println("Valor a analizar:"+Heap[pos]);
+        if(esHoja(pos)){
+            // System.out.println("Es hoja");
+            return;
+        }else{
+            // System.out.println("No es hoja");
+
+            //Si la posicion en la que me encuentro es mayor a ambos hijos
+            
+            
+            // System.out.println(Heap[pos]+" tiene hijo izquierdo ? "+tieneHijoIzq(pos));
+            // System.out.println(Heap[pos]+" tiene hijo derecho ? "+tieneHijoDer(pos));
+            
+            
+            // System.out.println("Hijo izquierdo de "+Heap[pos]+": "+Heap[hijoIzq(pos)]);
+            // System.out.println("Hijo derecho de "+Heap[pos]+": "+Heap[hijoDer(pos)]);
+
+            
+            if(tieneHijoDer(pos) && tieneHijoIzq(pos)){
+                // System.out.println(Heap[pos]+" tiene hijo izquierdo y derecho...");
+                if(Heap[pos] > Heap[hijoIzq(pos)] || Heap[pos] > Heap[hijoDer(pos)]){
+                    if(Heap[hijoIzq(pos)] < Heap[hijoDer(pos)]){
+                        
+                        // System.out.println("Intercambio "+Heap[pos]+" por hijo izquierdo: "+Heap[hijoIzq(pos)]);
+                        
+                        intercambiar(pos, hijoIzq(pos));
+                        System.out.println("");
+                        minHeapify(hijoIzq(pos));
+                    }else{
+    
+                        // System.out.println("Intercambio "+Heap[pos]+" por hijo derecho: "+Heap[hijoDer(pos)]);
+    
+    
+                        intercambiar(pos, hijoDer(pos));
+                        System.out.println("");
+
+                        minHeapify(hijoDer(pos));
+                    }
+                } 
+            }else if(!tieneHijoDer(pos)){
+                // System.out.println(Heap[pos]+" solamente tiene hijo izquierdo...");
+                if(Heap[pos] > Heap[hijoIzq(pos)]){
+                    // System.out.println("Intercambio "+Heap[pos]+" por hijo izquierda: "+Heap[hijoIzq(pos)]);
+                    intercambiar(pos, hijoIzq(pos));
+                    System.out.println("");
+
+                    minHeapify(hijoIzq(pos));
+                }
+                
+            }else{
+                // System.out.println(Heap[pos]+" solamente tiene hijo derecho...");
+                if(Heap[pos] > Heap[hijoDer(pos)]){
+                    // System.out.println("Intercambio "+Heap[pos]+" por hijo derecho: "+Heap[hijoDer(pos)]);
+                    intercambiar(pos, hijoDer(pos));
+                    System.out.println("");
+
+                    minHeapify(hijoDer(pos));
+                }
+            }
+
+
+
+            
         }
     }
 
@@ -108,9 +186,18 @@ public class HeapAO implements HeapTDA {
             Heap[indice-1] = 0;
             indice--;
             maxHeapify(0);
-            MostrarLista(Heap);
+            // MostrarLista(Heap);
         }else{
-
+            // System.out.println("Heap antes de la eliminacion");
+            MostrarLista(Heap);
+            int ultimo_elemento = Heap[indice-1];
+            // System.out.println("Se va a elimina el elemento "+Heap[0]+" y va a ser reemplazado por "+ ultimo_elemento);
+            Heap[0] = ultimo_elemento;
+            Heap[indice-1] = 0;
+            indice--;
+            // MostrarLista(Heap);
+            minHeapify(0);
+            // MostrarLista(Heap);
         }
         
     }

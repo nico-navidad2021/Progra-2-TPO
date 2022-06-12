@@ -20,7 +20,8 @@ public class Main {
         HeapTDA heap_aux = new HeapAO();
         heap_aux = heap;
         while(!heap_aux.HeapVacio()){
-            System.out.println(heap_aux.Primero());
+            System.out.println("");
+            System.out.println("Print del main: "+heap_aux.Primero());
             heap_aux.Eliminar();
         }
     }
