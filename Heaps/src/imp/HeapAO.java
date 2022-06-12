@@ -2,6 +2,12 @@ package imp;
 
 import api.HeapTDA;
 
+//TO-DO
+// minHeapify()
+// Eliminar para minHeap
+
+
+
 public class HeapAO implements HeapTDA {
 
     String tipo_heap;
@@ -13,11 +19,11 @@ public class HeapAO implements HeapTDA {
     }
 
     private int hijoIzq(int pos){
-        return (2*pos);
+        return (2*pos)+1;
     }
 
     private int hijoDer(int pos){
-        return (2*pos)+1;
+        return (2*pos)+2;
     }
 
     private boolean esHoja(int pos){
@@ -66,30 +72,43 @@ public class HeapAO implements HeapTDA {
         }     
     }
 
-    // private void maxHeapify(int pos){
-    //     if(esHoja(pos)){
-    //         return;
-    //     }else{
-    //         //Si la posicion en la que me encuentro es mayor a ambos hijos
-    //         if(Heap[pos] < Heap[hijoIzq(pos)] || Heap[pos] < Heap[hijoDer(pos)]){
-    //             if(Heap[hijoIzq(pos)] > Heap[hijoDer(pos)]){
-    //                 intercambiar(pos, hijoIzq(pos));
-    //                 maxHeapify(hijoIzq(pos));
-    //             }else{
-    //                 intercambiar(pos, hijoIzq(pos));
-    //                 maxHeapify(hijoIzq(pos));
-    //             }
-    //         }
-    //     }
-    // }
+    private void maxHeapify(int pos){
+        if(esHoja(pos)){
+            return;
+        }else{
+            //Si la posicion en la que me encuentro es mayor a ambos hijos
+            // System.out.println("Hijo izquierdo de "+Heap[pos]+": "+Heap[hijoIzq(pos)]);
+            // System.out.println("Hijo derecho de "+Heap[pos]+": "+Heap[hijoDer(pos)]);
+
+            if(Heap[pos] < Heap[hijoIzq(pos)] || Heap[pos] < Heap[hijoDer(pos)]){
+                if(Heap[hijoIzq(pos)] > Heap[hijoDer(pos)]){
+                    intercambiar(pos, hijoIzq(pos));
+                    maxHeapify(hijoIzq(pos));
+                }else{
+                    intercambiar(pos, hijoDer(pos));
+                    maxHeapify(hijoDer(pos));
+                }
+            }
+        }
+    }
+
+    //Funcion para debugear
+    private void MostrarLista(int[] x){
+        for (int i=0; i<indice;i++){
+            System.out.println("Elementos "+i+" del array "+x[i]+' ');
+        }
+    }
 
 
     @Override
     public void Eliminar() {
         if(tipo_heap == "max"){
-            Heap[0] = Heap[indice];
+            int ultimo_elemento = Heap[indice-1];
+            Heap[0] = ultimo_elemento;
+            Heap[indice-1] = 0;
             indice--;
-            // maxHeapify(0);
+            maxHeapify(0);
+            MostrarLista(Heap);
         }else{
 
         }
