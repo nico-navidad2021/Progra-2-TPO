@@ -1,7 +1,7 @@
 package api;
 
 public interface HeapTDA {
-    void InicializarHeap(String tipo);
+    void InicializarHeap(Boolean tipo);
     int Primero();
     void Insertar(int x);
     void Eliminar();

@@ -4,9 +4,9 @@ import api.HeapTDA;
 
 public class HeapAO implements HeapTDA {
 
-    String tipo_heap;
-    int[] Heap;
-    int indice;
+    boolean tipo_heap; //Indicador tipos de Heap (true = max, false = min)
+    int[] Heap; //Arreglo para almacenar todos los elementos del heap
+    int indice; //Contador para indicar la proxima posicion para insertar
 
     private int padre(int pos){
         return pos/2;
@@ -21,8 +21,6 @@ public class HeapAO implements HeapTDA {
     }
 
     private boolean esHoja(int pos){
-        // System.out.println("pos "+pos);
-        // System.out.println("indice "+indice);
         if((pos > (int)((indice-1)/2) && pos <= (indice-1))  || (indice == 1)){
             return true;    
         }
@@ -36,7 +34,7 @@ public class HeapAO implements HeapTDA {
     }
 
     @Override
-    public void InicializarHeap(String tipo) {
+    public void InicializarHeap(Boolean tipo) {
         tipo_heap = tipo;
         indice = 0;
         Heap = new int[14];
@@ -47,10 +45,10 @@ public class HeapAO implements HeapTDA {
         return Heap[0];
     }
 
-    @Override //Funca barbaro
+    @Override
     public void Insertar(int elemento) {
         Heap[indice] = elemento;
-        if(tipo_heap == "max"){
+        if(tipo_heap == true){
             int pos_actual = indice;
             while(Heap[pos_actual] > Heap[padre(pos_actual)]){
                 intercambiar(pos_actual, padre(pos_actual));
@@ -71,7 +69,7 @@ public class HeapAO implements HeapTDA {
         if(esHoja(pos)){
             return;
         }else{
-            //Si la posicion en la que me encuentro es mayor a ambos hijos
+            //Si la posicion en la que me encuentro es mayor a cualquiera de los hijos
             if(Heap[pos] < Heap[hijoIzq(pos)] || Heap[pos] < Heap[hijoDer(pos)]){
                 if(Heap[hijoIzq(pos)] > Heap[hijoDer(pos)]){
                     intercambiar(pos, hijoIzq(pos));
@@ -98,75 +96,38 @@ public class HeapAO implements HeapTDA {
         }else{
             return true;
         }
-
     }
 
-
-
     private void minHeapify(int pos){
-        // System.out.println("Valor a analizar:"+Heap[pos]);
+        //Caso base
         if(esHoja(pos)){
-            // System.out.println("Es hoja");
             return;
         }else{
-            // System.out.println("No es hoja");
-
-            //Si la posicion en la que me encuentro es mayor a ambos hijos
-            
-            
-            // System.out.println(Heap[pos]+" tiene hijo izquierdo ? "+tieneHijoIzq(pos));
-            // System.out.println(Heap[pos]+" tiene hijo derecho ? "+tieneHijoDer(pos));
-            
-            
-            // System.out.println("Hijo izquierdo de "+Heap[pos]+": "+Heap[hijoIzq(pos)]);
-            // System.out.println("Hijo derecho de "+Heap[pos]+": "+Heap[hijoDer(pos)]);
-
             
             if(tieneHijoDer(pos) && tieneHijoIzq(pos)){
-                // System.out.println(Heap[pos]+" tiene hijo izquierdo y derecho...");
+                /* Si es mayor a cualquiera de los hijos comparo los hijos e interambio por el menor.
+                 * Luego llamo nuevamente a la funcion para seguir ordenando
+                */
                 if(Heap[pos] > Heap[hijoIzq(pos)] || Heap[pos] > Heap[hijoDer(pos)]){
                     if(Heap[hijoIzq(pos)] < Heap[hijoDer(pos)]){
-                        
-                        // System.out.println("Intercambio "+Heap[pos]+" por hijo izquierdo: "+Heap[hijoIzq(pos)]);
-                        
                         intercambiar(pos, hijoIzq(pos));
-                        System.out.println("");
                         minHeapify(hijoIzq(pos));
                     }else{
-    
-                        // System.out.println("Intercambio "+Heap[pos]+" por hijo derecho: "+Heap[hijoDer(pos)]);
-    
-    
                         intercambiar(pos, hijoDer(pos));
-                        System.out.println("");
-
                         minHeapify(hijoDer(pos));
                     }
                 } 
             }else if(!tieneHijoDer(pos)){
-                // System.out.println(Heap[pos]+" solamente tiene hijo izquierdo...");
                 if(Heap[pos] > Heap[hijoIzq(pos)]){
-                    // System.out.println("Intercambio "+Heap[pos]+" por hijo izquierda: "+Heap[hijoIzq(pos)]);
                     intercambiar(pos, hijoIzq(pos));
-                    System.out.println("");
-
                     minHeapify(hijoIzq(pos));
                 }
-                
             }else{
-                // System.out.println(Heap[pos]+" solamente tiene hijo derecho...");
                 if(Heap[pos] > Heap[hijoDer(pos)]){
-                    // System.out.println("Intercambio "+Heap[pos]+" por hijo derecho: "+Heap[hijoDer(pos)]);
                     intercambiar(pos, hijoDer(pos));
-                    System.out.println("");
-
                     minHeapify(hijoDer(pos));
                 }
             }
-
-
-
-            
         }
     }
 
@@ -177,29 +138,24 @@ public class HeapAO implements HeapTDA {
         }
     }
 
-
     @Override
     public void Eliminar() {
-        if(tipo_heap == "max"){
+        /* Subo el ultimo elemento a la raiz, 
+        la posicion donde estaba el ultimo elemento la remplazo con 0 y reduzco el indice.
+        Por ultimo ardeno usando el heapify correspondiente */
+        if(tipo_heap == true){
             int ultimo_elemento = Heap[indice-1];
             Heap[0] = ultimo_elemento;
             Heap[indice-1] = 0;
-            indice--;
+            indice--; 
             maxHeapify(0);
-            // MostrarLista(Heap);
         }else{
-            // System.out.println("Heap antes de la eliminacion");
-            MostrarLista(Heap);
             int ultimo_elemento = Heap[indice-1];
-            // System.out.println("Se va a elimina el elemento "+Heap[0]+" y va a ser reemplazado por "+ ultimo_elemento);
             Heap[0] = ultimo_elemento;
             Heap[indice-1] = 0;
             indice--;
-            // MostrarLista(Heap);
             minHeapify(0);
-            // MostrarLista(Heap);
         }
-        
     }
 
     @Override

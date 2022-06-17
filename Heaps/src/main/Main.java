@@ -6,14 +6,13 @@ import imp.HeapAO;
 public class Main {
     public static void main(String[] args) throws Exception {
         HeapTDA heap = new HeapAO();
-        heap.InicializarHeap("max");
+        heap.InicializarHeap(true);
         heap.Insertar(10);
         heap.Insertar(50);
         heap.Insertar(40);
         heap.Insertar(60);
         heap.Insertar(41);
         MostrarHeap(heap);
-        System.out.println("Fin");
     }
 
     public static void MostrarHeap(HeapTDA heap){
@@ -21,7 +20,7 @@ public class Main {
         heap_aux = heap;
         while(!heap_aux.HeapVacio()){
             System.out.println("");
-            System.out.println("Print del main: "+heap_aux.Primero());
+            System.out.println(heap_aux.Primero());
             heap_aux.Eliminar();
         }
     }
