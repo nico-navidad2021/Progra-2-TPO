@@ -1,9 +1,11 @@
 package main;
 
 import api.ConjuntoTDA;
+import api.DiccionarioSimpleTDA;
 import api.GrafoTDA;
 import imp.GrafoMA;
 import imp.ConjuntoLD;
+import imp.DicSimpleL;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -26,8 +28,11 @@ public class Main {
 
         grafo.AgregarArista(4, 3, 1);
         
-        MostrarGrafo(grafo);
+        System.out.println("Grafo original:");
+        grafo.MostrarAdyacencias();
 
+        GrafoTDA grafo_dijkstra =  CaminoMinimoDijkstra(grafo,4);
+        grafo_dijkstra.MostrarAdyacencias();
     }
 
 
@@ -65,7 +70,6 @@ public class Main {
 
         return copia;
     }
-
 
     public static int[] Conjunto2Array(ConjuntoTDA conjunto){
         int [] elementos = new int[CantElemConjunto(conjunto)];
@@ -117,6 +121,114 @@ public class Main {
         
 
     }
+
+    static void Mostrar(ConjuntoTDA conjunto){
+        ConjuntoTDA aux = Copiar(conjunto);
+        while(!aux.ConjuntoVacio()){
+            int elemento = aux.Elegir();
+            System.out.print(elemento+" ");
+            aux.Sacar(elemento);
+        }
+        System.out.println();
+    }
+
+    public static DiccionarioSimpleTDA Obtener_aristas(GrafoTDA grafo,int vertice_origen){
+        //Obtengo todas la aristas y sus direcciones segun grafo recibido por parametro
+        DiccionarioSimpleTDA aristas = new DicSimpleL();
+        aristas.InicializarDiccionario();
+        
+        int canti_vertices = CantElemConjunto(grafo.Vertices());
+        ConjuntoTDA vertices = grafo.Vertices();
+
+        for(int z = 0;z<canti_vertices+1;z++){
+            int vertice_destino = vertices.Elegir();
+
+            System.out.print("Existe arista entre "+vertice_origen+" y "+vertice_destino);
+
+            if(grafo.ExisteArista(vertice_origen, vertice_destino)){
+                System.out.println("     Si");
+                aristas.Agregar(vertice_destino, grafo.PesoArista(vertice_origen, vertice_destino));
+            }else{
+                System.out.println("     No");
+            }
+            vertices.Sacar(vertice_destino);
+            z++;
+        }
+        return aristas;
+    }
+    
+    static void MostrarDiccionario(DiccionarioSimpleTDA diccionario){
+        DiccionarioSimpleTDA aux = diccionario;
+        ConjuntoTDA claves = diccionario.Claves();
+
+        while(!claves.ConjuntoVacio()){
+            int clave = claves.Elegir();
+            System.out.println("Clave: "+clave+"   Valor: "+aux.Recuperar(clave));
+            claves.Sacar(clave);
+        }
+    }
+    
+    static int ObtenerMenorArista(DiccionarioSimpleTDA aristas, ConjuntoTDA vertices_pendientes, ConjuntoTDA vertices_visitados){
+        ConjuntoTDA claves = aristas.Claves();
+        int vertice = 0;
+        int peso_menor_arista = Integer.MAX_VALUE;
+
+        MostrarDiccionario(aristas);
+
+
+        while(!claves.ConjuntoVacio()){
+            int clave = claves.Elegir();
+            
+            System.out.println(clave+" ya fue visitado ?"+vertices_visitados.Pertenece(clave));
+            int peso_evaluado = aristas.Recuperar(clave);
+
+            if(peso_menor_arista >= peso_evaluado && vertices_visitados.Pertenece(clave)){
+                System.out.println("Claves dentro del obtenerMenorArista: ");
+                MostrarDiccionario(aristas);
+                peso_menor_arista = peso_evaluado;
+                vertice = clave;
+            }
+            claves.Sacar(clave);
+        }
+        return vertice;
+    }
+
+    public static GrafoTDA CaminoMinimoDijkstra(GrafoTDA grafo_original, int origen){
+        GrafoTDA grafo_dijkstra = new GrafoMA();
+        grafo_dijkstra.InicializarGrafo();
+        grafo_dijkstra.AgregarVertice(origen);
+
+        ConjuntoTDA vertices_pendientes = grafo_original.Vertices();
+        vertices_pendientes.Sacar(origen);
+
+        ConjuntoTDA vertices_visitados = new ConjuntoLD();
+        vertices_visitados.InicializarConjunto();
+        vertices_visitados.Agregar(origen);
+
+        int vertice_evaluado = origen;
+
+        while(!vertices_pendientes.ConjuntoVacio()){
+            System.out.println("Vertice evaluado: "+vertice_evaluado);
+            DiccionarioSimpleTDA aristas = Obtener_aristas(grafo_original, vertice_evaluado);
+            MostrarDiccionario(aristas);
+
+            int menor = ObtenerMenorArista(aristas, vertices_pendientes,vertices_visitados);
+            System.out.println("Vertice con menor arista: "+menor);
+            System.out.println();
+            grafo_dijkstra.AgregarVertice(menor);
+            grafo_dijkstra.AgregarArista(vertice_evaluado, menor, aristas.Recuperar(menor));
+
+            vertices_visitados.Agregar(menor);
+            vertice_evaluado = menor;
+            vertices_pendientes.Sacar(menor);
+
+
+        }
+
+
+        return grafo_dijkstra;
+    }
+
 
 
 }

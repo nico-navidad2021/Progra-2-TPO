@@ -81,11 +81,21 @@ public class GrafoMA implements GrafoTDA{
     @Override
     public boolean ExisteArista(int v1, int v2) {
         int o = Vert2Indice(v1);
-        System.out.println(o);
         int d = Vert2Indice(v2);
         return (MAdy[o][d] != 0);           
     }
     
+    @Override
+    public void MostrarAdyacencias(){
+        for (int i = 0;i<cantNodos;i++){
+            System.out.print((Etiqs[i])+"| ");
+            for (int z = 0;z<cantNodos;z++){
+                System.out.print(MAdy[i][z]+" ");
+            }   
+            System.out.println();
+        }
+    }
+
     private int Vert2Indice(int v){
         int i = cantNodos - 1;
         //Recorro el vector con el mapeo de indice-valor para ver si existe un vertice con el valor que busco
