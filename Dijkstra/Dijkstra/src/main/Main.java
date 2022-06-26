@@ -31,10 +31,9 @@ public class Main {
         System.out.println("Grafo original:");
         grafo.MostrarAdyacencias();
 
-        GrafoTDA grafo_dijkstra =  CaminoMinimoDijkstra(grafo,4);
+        GrafoTDA grafo_dijkstra =  CaminoMinimoDijkstra(grafo,1);
         grafo_dijkstra.MostrarAdyacencias();
     }
-
 
     public static int CantElemConjunto(ConjuntoTDA conjunto){
         int cant = 0;
@@ -228,7 +227,4 @@ public class Main {
 
         return grafo_dijkstra;
     }
-
-
-
 }
