@@ -9,7 +9,7 @@ public class HeapAO implements HeapTDA {
     int indice; //Contador para indicar la proxima posicion para insertar
 
     private int padre(int pos){
-        return pos/2;
+        return (pos-1)/2;
     }
 
     private int hijoIzq(int pos){
