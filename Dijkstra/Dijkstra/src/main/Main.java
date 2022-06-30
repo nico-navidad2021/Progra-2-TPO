@@ -31,7 +31,7 @@ public class Main {
         System.out.println("Grafo original:");
         grafo.MostrarAdyacencias();
 
-        GrafoTDA grafo_dijkstra =  CaminoMinimoDijkstra(grafo,1);
+        GrafoTDA grafo_dijkstra =  CaminoMinimoDijkstra(grafo,2);
         grafo_dijkstra.MostrarAdyacencias();
     }
 
@@ -85,23 +85,15 @@ public class Main {
         DiccionarioSimpleTDA aristas = new DicSimpleL();
         aristas.InicializarDiccionario();
         
-        int canti_vertices = CantElemConjunto(grafo.Vertices()); //Uso esta variable para saber cuando cortar la iteracion
         ConjuntoTDA vertices = grafo.Vertices(); //Me traigo todos los vertices del grafo
 
-        for(int z = 0;z<canti_vertices+1;z++){
-            int vertice_destino = vertices.Elegir(); //Vertice de destino del cual voy a evaluar si tiene o no aristas con el vertice de origen
-
-            System.out.print("Existe arista entre "+vertice_origen+" y "+vertice_destino);
-
+        while(!vertices.ConjuntoVacio()){
+            int vertice_destino = vertices.Elegir();
             if(grafo.ExisteArista(vertice_origen, vertice_destino)){
-                System.out.println("     Si");
                 //Si existe arista entre vertice de origen y el de destino, agrego como KEY el vertice de detino y VALUE el peso de esa arista 
                 aristas.Agregar(vertice_destino, grafo.PesoArista(vertice_origen, vertice_destino));
-            }else{
-                System.out.println("     No");
             }
-            vertices.Sacar(vertice_destino); //Al estar iterando sobre un conjunto, tengo que ir sacando los elementos que ya evalue
-            z++;
+            vertices.Sacar(vertice_destino);
         }
         return aristas;
     }
@@ -128,19 +120,15 @@ public class Main {
         int peso_menor_arista = Integer.MAX_VALUE; //Uso esta variable para ir comparando el peso de la arista que vaya evaluando,
                                                     //Integer.MAX_VALUE devuelve 2147483647, este es el maximo valor que un Integer puede tener
 
-        MostrarDiccionario(aristas);//DEBUG
+        // MostrarDiccionario(aristas);//DEBUG
 
         while(!claves.ConjuntoVacio()){ //Itero hasta quedarme sin claves
-            int clave = claves.Elegir(); //
-            
-            System.out.println(clave+" ya fue visitado ?"+vertices_visitados.Pertenece(clave));
+            int clave = claves.Elegir(); 
             int peso_evaluado = aristas.Recuperar(clave); //Peso del vertice
 
             //Si el peso del vertice que estoy evaluando es menor al que yo consideraba como menor, lo establezco como nuevo menor
             // Tambien guardo el vertice que corresponde a este nuevo peso minimo
-            if(peso_menor_arista >= peso_evaluado && vertices_visitados.Pertenece(clave)){
-                System.out.println("Claves dentro del ObtenerVerticeMenorArista: ");
-                MostrarDiccionario(aristas);
+            if(peso_menor_arista >= peso_evaluado && !vertices_visitados.Pertenece(clave)){
                 peso_menor_arista = peso_evaluado;
                 vertice = clave;
             }
@@ -164,13 +152,9 @@ public class Main {
         int vertice_evaluado = origen; //Vertice del cual voy a evaluar sus aristas 
 
         while(!vertices_pendientes.ConjuntoVacio()){
-            System.out.println("Vertice evaluado: "+vertice_evaluado);
             DiccionarioSimpleTDA aristas = Obtener_aristas(grafo_original, vertice_evaluado); //Me traigo todas sus aristas
             MostrarDiccionario(aristas);
-
             int menor = ObtenerVerticeMenorArista(aristas, vertices_pendientes,vertices_visitados); //Obtengo el vertice con menor arista
-            System.out.println("Vertice con menor arista: "+menor);
-            System.out.println();
             grafo_dijkstra.AgregarVertice(menor); //Agrego el menor de los nodos al grafo resultante
             grafo_dijkstra.AgregarArista(vertice_evaluado, menor, aristas.Recuperar(menor)); //Establezco la arista entre los nodos
 

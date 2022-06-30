@@ -2,6 +2,7 @@ package imp;
 
 import api.ConjuntoTDA;
 import api.GrafoTDA;
+import imp.*;
 
 public class GrafoMA implements GrafoTDA{
 
@@ -85,6 +86,15 @@ public class GrafoMA implements GrafoTDA{
     
     @Override
     public void MostrarAdyacencias(){
+
+        System.out.print("   "+(Etiqs[0])+" ");
+
+        for(int x =1;x<cantVertices;x++){
+            System.out.print((Etiqs[x])+" ");
+        }
+
+        System.out.println();
+
         for (int i = 0;i<cantVertices;i++){
             System.out.print((Etiqs[i])+"| ");
             for (int z = 0;z<cantVertices;z++){

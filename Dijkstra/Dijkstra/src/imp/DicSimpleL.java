@@ -2,6 +2,7 @@ package imp;
 
 import api.ConjuntoTDA;
 import api.DiccionarioSimpleTDA;
+import imp.ConjuntoLD;
 
 public class DicSimpleL implements DiccionarioSimpleTDA{
 
