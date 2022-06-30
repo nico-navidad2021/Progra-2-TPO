@@ -153,7 +153,6 @@ public class Main {
 
         while(!vertices_pendientes.ConjuntoVacio()){
             DiccionarioSimpleTDA aristas = Obtener_aristas(grafo_original, vertice_evaluado); //Me traigo todas sus aristas
-            MostrarDiccionario(aristas);
             int menor = ObtenerVerticeMenorArista(aristas, vertices_pendientes,vertices_visitados); //Obtengo el vertice con menor arista
             grafo_dijkstra.AgregarVertice(menor); //Agrego el menor de los nodos al grafo resultante
             grafo_dijkstra.AgregarArista(vertice_evaluado, menor, aristas.Recuperar(menor)); //Establezco la arista entre los nodos
